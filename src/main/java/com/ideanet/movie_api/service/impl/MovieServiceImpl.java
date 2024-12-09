@@ -6,10 +6,10 @@ import com.ideanet.movie_api.mapper.MovieMapper;
 import com.ideanet.movie_api.repository.MovieRepository;
 import com.ideanet.movie_api.service.MovieService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -23,9 +23,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<MovieDTO> getMovies(int page, int size, String sort) {
-        Pageable pageable = PageRequest.of(page,size, Sort.by(sort));
+    public Page<MovieDTO> getMovies(Pageable pageable) {
         Page<Movie> movies = movieRepository.findAll(pageable);
         return movies.map(movieMapper :: movieToMovieDTO);
+    }
+
+    @Override
+    public Optional<MovieDTO> getMovieById(Long id) {
+        return movieRepository.findById(id).map(movieMapper :: movieToMovieDTO);
     }
 }
